@@ -164,6 +164,7 @@
 					[self.dataArr addObject:resultstring];
 					[self.tableView beginUpdates];
 					[self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.dataArr.count-1 inSection:0]] withRowAnimation:UITableViewRowAnimationTop];
+					[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:self.dataArr.count - 2 inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
 					[self.tableView endUpdates];
 //
 				});
