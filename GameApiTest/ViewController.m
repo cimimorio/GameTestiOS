@@ -51,6 +51,40 @@
 	}
 }
 
+- (IBAction)addGameBtnAction:(id)sender {
+	NSString *playerID = @"111111";
+	NSString *roomID = @"10002";
+	NSString *api = [NSString stringWithFormat:@"http://localhost:8080/room/addgame/%@/%@",playerID,roomID];
+	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+	[request setURL:[NSURL URLWithString:api]];
+	[request setTimeoutInterval:3];
+	[request setHTTPMethod:@"GET"];
+	NSURLSessionTask *task = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+		dispatch_async(dispatch_get_main_queue(), ^{
+			NSString *result = nil;
+			if (error) {
+				NSLog(@"%s--%@",__FUNCTION__,error);
+				result = [error description];
+			}else{
+				NSError *err;
+				result = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&err];
+				NSLog(@"%@",result);
+			}
+			if (result == nil) {
+				return;
+			}
+			NSLog(@"%@",result);
+			[self.dataArr addObject:[NSString stringWithFormat:@"%@",result]];
+			[self.tableView beginUpdates];
+			[self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.dataArr.count-1 inSection:0]] withRowAnimation:UITableViewRowAnimationTop];
+			[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:self.dataArr.count - 2 inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+			[self.tableView endUpdates];
+		});
+		
+	}];
+	[task resume];
+}
+
 - (void)reloadData{
 	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
 	[request setURL:[NSURL URLWithString:@"http:127.0.0.1:8080/room/test"]];
@@ -104,7 +138,7 @@
 - (void)initStream{
 	
 	NSString *host = @"127.0.0.1";
-	int port = 8282;
+	int port = 8080;
 	
 	CFReadStreamRef read_s;
 	CFWriteStreamRef write_s;
