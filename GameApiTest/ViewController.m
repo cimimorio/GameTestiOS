@@ -67,8 +67,9 @@
 				result = [error description];
 			}else{
 				NSError *err;
+//				result = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 				result = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&err];
-				NSLog(@"%@",result);
+//				NSLog(@"%@----%@",result,err);
 			}
 			if (result == nil) {
 				return;
@@ -194,6 +195,9 @@
 						}
 					}
 					NSString *resultstring = [[NSString alloc] initWithData:input encoding:NSUTF8StringEncoding];
+					if ([resultstring containsString:@"ping"]) {
+						return;
+					}
 					NSLog(@"接收:%@",resultstring);
 					[self.dataArr addObject:resultstring];
 					[self.tableView beginUpdates];
